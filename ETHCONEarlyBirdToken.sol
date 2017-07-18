@@ -5,16 +5,17 @@ import './ERC20Lib.sol';
 
 /**
  * @title ETHCON Early Bird Token
- * @autor majoolr.io
+ * @author majoolr.io
  *
  * Only allows one token per account. See ETHCON.org for further information.
- * Implements ERC20 Library at 0x123456789
+ * Implements ERC20 Library at 0x71ecde7c4b184558e8dba60d9f323d7a87411946
+ *
  * https://github.com/ethereum/EIPs/issues/20
  * Based on code by FirstBlood:
  * https://github.com/Firstbloodio/token/blob/master/smart_contract/FirstBloodToken.sol
  */
 
- contract ETHCONEarlyBirdToken {
+contract ETHCONEarlyBirdToken {
    using ERC20Lib for ERC20Lib.TokenStorage;
 
    ERC20Lib.TokenStorage token;
@@ -26,7 +27,7 @@ import './ERC20Lib.sol';
 
    event ErrorMsg(string msg);
 
-   function StandardToken() {
+   function ETHCONEarlyBirdToken() {
      token.init(INITIAL_SUPPLY);
    }
 
@@ -67,4 +68,4 @@ import './ERC20Lib.sol';
 
    event Transfer(address indexed from, address indexed to, uint value);
    event Approval(address indexed owner, address indexed spender, uint value);
- }
+}

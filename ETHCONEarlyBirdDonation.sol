@@ -1,67 +1,85 @@
 pragma solidity ^0.4.11;
 
 
-import './ETHCONEarlyBirdToken';
+import './ETHCONEarlyBirdToken.sol';
 
 /**
  * @title ETHCON Early Bird Donation Contract
- * @autor majoolr.io
+ * @author majoolr.io
  *
  * Accepts donations and issues ETHCON token if at or above 3.9604 ETH.
  * See ETHCON.org for further information.
- * ETHCONEarlyBirdToken contract at 0x123456789
+ * ETHCONEarlyBirdToken contract at 0x55b948be16f1eba9802c6dd83f04c501be00394f
  */
 
- contract ETHCONEarlyBird {
+contract ETHCONEarlyBirdDonation {
+  address majoolr;
+  ETHCONEarlyBirdToken token;
 
-   ERC20Lib.TokenStorage token;
+  uint256 public donations;
+  mapping (address => uint256) public donationMap;
+  mapping (address => uint256) public failedDonations;
+  uint256 public minimum = 3960400000000000000;
 
-   string public name = "ETHCON-Early-Bird";
-   string public symbol = "THX";
-   uint public decimals = 0;
-   uint public INITIAL_SUPPLY = 600;
+  event ErrMsg(address indexed _from, string _msg);
+  event ThxMsg(address indexed _from, string _msg);
 
-   event ErrorMsg(string msg);
+  modifier andIsMajoolr {
+    require(msg.sender == majoolr);
+    _;
+  }
 
-   function StandardToken() {
-     token.init(INITIAL_SUPPLY);
-   }
+  function(){ ErrMsg(msg.sender, 'No function called'); }
 
-   function totalSupply() constant returns (uint) {
-     return token.totalSupply;
-   }
+  function ETHCONEarlyBirdDonation(address _token){
+    token = ETHCONEarlyBirdToken(_token);
+    majoolr = msg.sender;
+  }
 
-   function balanceOf(address who) constant returns (uint) {
-     return token.balanceOf(who);
-   }
+  function donate() payable returns (bool){
+    uint256 totalDonation = donationMap[msg.sender] + msg.value;
+    if(totalDonation < minimum){
+      failedDonations[msg.sender] += msg.value;
+      ErrMsg(msg.sender, "Donation too low, call withdrawDonation()");
+      return false;
+    }
 
-   function allowance(address owner, address spender) constant returns (uint) {
-     return token.allowance(owner, spender);
-   }
+    bool success = token.transferFrom(majoolr,msg.sender,1);
+    if(!success){
+      failedDonations[msg.sender] += msg.value;
+      ErrMsg(msg.sender, "Transer failed, call withdrawDonation()");
+      return false;
+    }
 
-   function transfer(address to, uint value) returns (bool ok) {
-     if(token.balanceOf(to) == 0){
-       return token.transfer(to, value);
-     } else {
-       ErrorMsg("Recipient already has token");
-       return false;
-     }
+    donationMap[msg.sender] += msg.value;
+    donations += msg.value;
+    ThxMsg(msg.sender, "Thank you for your donation!");
+    return true;
+  }
 
-   }
+  function generousDonation() payable returns (bool){
+    uint256 tokensLeft = token.allowance(majoolr, this);
+    if(tokensLeft == 0){
+      failedDonations[msg.sender] += msg.value;
+      ErrMsg(msg.sender, "No more donations here check Majoolr.io, call withdrawDonation()");
+      return false;
+    }
 
-   function transferFrom(address from, address to, uint value) returns (bool ok) {
-     if(token.balanceOf(to) == 0){
-       return token.transferFrom(from, to, value);
-     } else {
-       ErrorMsg("Recipient already has token");
-       return false;
-     }
-   }
+    donationMap[msg.sender] += msg.value;
+    donations += msg.value;
+    ThxMsg(msg.sender, "Thank you for your donation!");
+    return true;
+  }
 
-   function approve(address spender, uint value) returns (bool ok) {
-     return token.approve(spender, value);
-   }
+  function withdraw() andIsMajoolr {
+    uint256 amount = donations;
+    donations = 0;
+    msg.sender.transfer(amount);
+  }
 
-   event Transfer(address indexed from, address indexed to, uint value);
-   event Approval(address indexed owner, address indexed spender, uint value);
- }
+  function withdrawDonation(){
+    uint256 amount = failedDonations[msg.sender];
+    failedDonations[msg.sender] = 0;
+    msg.sender.transfer(amount);
+  }
+}
