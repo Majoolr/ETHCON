@@ -16,7 +16,7 @@ Repository for deployed ETHCON token contracts. [Please visit ETHCON.org](http:/
 
 ## How to Donate
 
-In order to donate you will need to call either the contract's **donate()** or **generousDonation()** method when sending Ether. To recieve a token for ETHCON you will need to call **donate()** with a sending value of 3.9604 or more ether. Any call to the **donate()** function below that threshold will be rejected and any ether sent will go to a *failedDonations* pile. To retrieve your donation then simply call the contract's **withdrawDonation()** function. If you would like to send any amount of ether just because then call the **generousDonation()** function. [Click here for further information](http://ethcon.org "ETHCON website").
+In order to donate you will need to call either the contract's **donate()** or **generousDonation()** method when sending Ether. To recieve a token for ETHCON you will need to call **donate()** with a sending value of 3.9604 or more ether. Any call to the **donate()** function below that threshold will be rejected and any ether sent will go to a *failedDonations* pile. To retrieve your donation then simply call the contract's **withdrawDonation()** function. If you would like to send any amount of ether just to contribute to Majoolr's open source work then call the **generousDonation()** function. [Click here for further information](http://ethcon.org "ETHCON website").
 
 ## About Us
 
