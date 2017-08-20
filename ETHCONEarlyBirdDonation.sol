@@ -6,10 +6,6 @@ import './ETHCONEarlyBirdToken.sol';
 /**
  * @title ETHCON Early Bird Donation Contract
  * @author majoolr.io
- *
- * Accepts donations and issues ETHCON token if at or above 3.9604 ETH.
- * See ETHCON.org for further information.
- * ETHCONEarlyBirdToken contract at 0x55b948be16f1eba9802c6dd83f04c501be00394f
  */
 
 contract ETHCONEarlyBirdDonation {
